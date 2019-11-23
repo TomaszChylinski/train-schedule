@@ -29,6 +29,6 @@ LETS PLAN
 */
 
 //display current time 
-$('.currentTime').text(moment().format('h:mm:ss A'));
+$('.currentTime').text(moment().format('h:mm A'));
 
-var currentTime = (moment().format('h:mm:ss'));
+var currentTime = (moment().format('h:mm'));
