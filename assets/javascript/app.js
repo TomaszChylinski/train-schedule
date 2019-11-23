@@ -27,3 +27,8 @@ LETS PLAN
     -First Departure time 
 
 */
+
+//display current time 
+$('.currentTime').text(moment().format('h:mm:ss A'));
+
+var currentTime = (moment().format('h:mm:ss'));

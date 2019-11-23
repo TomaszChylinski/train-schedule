@@ -3,3 +3,7 @@ body{
     background: lightgray;
     color: lightseagreen;
 }
+
+th{
+    font-weight: bold;
+}
