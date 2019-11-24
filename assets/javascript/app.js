@@ -28,23 +28,44 @@ LETS PLAN
 
 */
 
-//display current time 
-$('.currentTime').text(moment().format('h:mm A'));
 
-var currentTime = (moment().format('h:mm'));
+ // Your web app's Firebase configuration
+ var firebaseConfig = {
+    apiKey: "AIzaSyAyeAyFNzctgu4iTvZ0oQaqNmyRvjivPpk",
+    authDomain: "train-schedule-f7941.firebaseapp.com",
+    databaseURL: "https://train-schedule-f7941.firebaseio.com",
+    projectId: "train-schedule-f7941",
+    storageBucket: "train-schedule-f7941.appspot.com",
+    messagingSenderId: "618237921355",
+    appId: "1:618237921355:web:c216b2f27a63b8e47f25ce"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+//display current time
+$(".currentTime").text(moment().format("h:mm A"));
+
+var currentTime = moment().format("h:mm");
 
 
 
-//store all values
-var trainNumber = $('#train-number').val();
-var trainLine = $('#train-line').val();
-var trainDest = $('#train-destination').val();
-var trainDept = $('#train-departure').val();
-var trainPlatForm = $('#train-platform').val();
+$("#addTrain").on("click", function () {
+    console.log("did i get clicked ");
+    //store all values
+    var trainNumber = $("#train-number").val().trim();
+    var trainLine = $("#train-line").val().trim();
+    var trainDest = $("#train-destination").val().trim();
+    var trainDept = $("#train-departure").val().trim();
+    var trainPlatForm = $("#train-platform").val().trim();
 
 
-$('#addTrain').on("click",function(){
-    console.log('did i get clicked ' )
-
-    
-})
+    $('#train-schedule-body').append(
+        '<tr>' +
+        '<td' + trainNumber + '</td>' +
+        '<td>' + trainLine + '</td>' +
+        '<td>' + trainDest + '</td>' +
+        '<td>' + trainDept + '</td>' +
+        '<td>' + trainPlatForm + '</td>' +
+        '</tr>'
+    );
+});
