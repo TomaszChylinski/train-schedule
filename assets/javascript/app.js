@@ -29,8 +29,13 @@ LETS PLAN
 */
 
 
- // Your web app's Firebase configuration
- var firebaseConfig = {
+//display current time
+$(".currentTime").text(moment().format("h:mm A"));
+
+var currentTime = moment().format("h:mm");
+
+// Your web app's Firebase configuration
+var firebaseConfig = {
     apiKey: "AIzaSyAqZNrflv1yu9USlZXzkiybAlT_-cFTuUA",
     authDomain: "train-schedule-hw-53a0f.firebaseapp.com",
     databaseURL: "https://train-schedule-hw-53a0f.firebaseio.com",
@@ -39,17 +44,14 @@ LETS PLAN
     messagingSenderId: "786492117314",
     appId: "1:786492117314:web:3e2f837e65c4cbee9cf8db",
     measurementId: "G-32LNSGDLTN"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
+};
 
-  var dataRef = firebase.database();
 
-//display current time
-$(".currentTime").text(moment().format("h:mm A"));
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
 
-var currentTime = moment().format("h:mm");
+var dataRef = firebase.database();
 
 
 //intial values 
@@ -62,28 +64,30 @@ var trainPlatForm = "";
 
 $("#addTrain").on("click", function (event) {
     event.preventDefault();
+
     console.log("did i get clicked ");
     //store all values
-     trainNumber = $("#train-number").val().trim();
-     trainLine = $("#train-line").val().trim();
-     trainDest = $("#train-destination").val().trim();
-     trainDept = $("#train-departure").val().trim();
-     trainPlatForm = $("#train-platform").val().trim();
+    trainNumber = $("#train-number").val().trim();
+    trainLine = $("#train-line").val().trim();
+    trainDest = $("#train-destination").val().trim();
+    trainDept = $("#train-departure").val().trim();
+    trainPlatForm = $("#train-platform").val().trim();
 
     //code for the push
     dataRef.ref().push({
-        
-        trainNumber:trainNumber,
+
+        trainNumber: trainNumber,
         trainLine: trainLine,
-        trainDest:trainDest,
-        trainDept:trainDept,
-        trainPlatForm:trainPlatForm
+        trainDest: trainDest,
+        trainDept: trainDept,
+        trainPlatForm: trainPlatForm,
+        dateAdded: firebase.database.ServerValue.TIMESTAMP
     })
 });
 
-dataRef.ref().on("child_added", function(childSnapshot) {
+dataRef.ref().on("child_added", function (childSnapshot) {
 
-
+    // Log everything that's coming out of snapshot
     console.log(childSnapshot.val().trainNumber);
     console.log(childSnapshot.val().trainLine);
     console.log(childSnapshot.val().trainDest);
@@ -91,15 +95,16 @@ dataRef.ref().on("child_added", function(childSnapshot) {
     console.log(childSnapshot.val().trainPlatForm);
 
 
-   // full list of items to the wall
-$('#train-schedule-body').append(
-    '<tr>' +
-    '<td' + trainNumber + '</td>' +
-    '<td>' + trainLine + '</td>' +
-    '<td>' + trainDest + '</td>' +
-    '<td>' + trainDept + '</td>' +
-    '<td>' + trainPlatForm + '</td>' +
-    '</tr>'
-);
+    // full list of items to the wall
+    $('#train-schedule-body').append(
+        '<tr>' +
+        '<td' + childSnapshot.val().trainNumber + '</td>' +
+        '<td>' + childSnapshot.val().trainLine + '</td>' +
+        '<td>' + childSnapshot.val().trainDest + '</td>' +
+        '<td>' + childSnapshot.val().trainDept + '</td>' +
+        '<td>' + childSnapshot.val().trainPlatForm + '</td>' +
+        '</tr>'
+    );
 
-})
+    // Handle the errors
+},);
