@@ -1,4 +1,4 @@
-var timepicker = new TimePicker('time', {
+var timepicker = new TimePicker('first-departure', {
     lang: 'en',
     theme: 'dark'
   });
