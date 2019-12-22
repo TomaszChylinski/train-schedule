@@ -1,38 +1,90 @@
-/*
- Firebase to host arrival and departure data. Your app will retrieve and manipulate this information with Moment.js. 
- This website will provide up-to-date information about various trains, namely 
- their arrival times and how many minutes remain until they arrive at their station.
+
+var timepicker = new TimePicker('time', {
+    lang: 'en',
+    theme: 'dark'
+  });
+  timepicker.on('change', function(evt) {
+    
+    var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+    evt.element.value = value;
+  
+  });
 
 
-LETS PLAN
 
-- Create Input Area for Train Information
-  <form>
-
-
-  --jumbotrion with current time 
-
-  Table -- 
-  -Train Name 
-  -Train ID
-  -Frequency of train arrival 
-  -time of arrival 
-  -time till arrival 
+var currentTime = moment().format("h:mm");
+var trainDeparture = 30;
 
 
-  -Form to innput new train 
-    -Train Name 
-    -Train ID
-    -Frequency of train arrival 
-    -First Departure time 
 
+//intial values 
+var trainStation = ""; 
+var trainId = 0;
+var trainDest = "";
+var firstDept = 0;
+var trainFrequency = $("#train-frequency").val().trim();
+var arrivalTime;
+var arrivalCountDown;
+var trainPlatform = "";
+
+$('#testing').on('click', function(){
+    
+ var updateFreqTime = moment(trainFrequency, "hh:mm")
+ console.log(moment(trainFrequency, "hh:mm"))
+})
+
+console.log(moment(trainDeparture, "hh:mm"))
+// First Time (pushed back 1 year to make sure it comes before current time)
+var trainDepartureCoverted = moment(trainDeparture, "hh:mm").subtract(1, 'years');
+
+console.log('train departure converted ' + trainDepartureCoverted)
+
+//difference between the times
+var diffTime = moment().diff(moment(trainDepartureCoverted), "minutes");
+console.log('show difference ' + diffTime)
+
+    // Time apart (remainder)
+ var timeRemainder = diffTime % trainFrequency;
+ console.log('reminder ' + timeRemainder)
+
+   //minutes until Train
+   var minutesAway = trainFrequency - timeRemainder;
+   minutesAway = moment().startOf('day').add(minutesAway, 'minutes').format('HH:mm');
+   console.log('minutes until train ' + minutesAway)
+
+   
+
+
+   //capture Frequency 
+
+
+     
+   /*nextArrival: () => {
+	    // First Time (pushed back 1 year to make sure it comes before current time)
+	    var trainDepartureCoverted = moment(trainDeparture, "hh:mm").subtract(1, 'years');
+	    // get Current Time
+	    var currentTime = moment();
+	    //difference between the times
+	    var diffTime = moment().diff(moment(trainDepartureCoverted), "minutes");
+	    // Time apart (remainder)
+	    var timeRemainder = diffTime % trainFrequency;
+	    //minutes until Train
+	    var timeInMinutesTillTrain = trainFrequency - timeRemainder;
+	    //Next Train
+	    nextTrain = moment().add(timeInMinutesTillTrain, 'minutes');
+	    nextTrain = moment(nextTrain).format('h:mm A');
+	},
 */
+
+
 
 
 //display current time
 $(".currentTime").text(moment().format("h:mm A"));
 
-var currentTime = moment().format("h:mm");
+
+
+
 
 // Your web app's Firebase configuration
 var firebaseConfig = {
@@ -54,57 +106,49 @@ firebase.analytics();
 var dataRef = firebase.database();
 
 
-//intial values 
-var trainNumber = 0;
-var trainLine = "";
-var trainDest = "";
-var trainDept = 0;
-var trainPlatForm = "";
-
-
 $("#addTrain").on("click", function (event) {
     event.preventDefault();
 
     console.log("did i get clicked ");
     //store all values
-    trainNumber = $("#train-number").val().trim();
-    trainLine = $("#train-line").val().trim();
+    trainStation = $("#train-station").val().trim();
+    trainId = $("#train-id").val().trim();
     trainDest = $("#train-destination").val().trim();
-    trainDept = $("#train-departure").val().trim();
-    trainPlatForm = $("#train-platform").val().trim();
+    firstDept = $("#first-departure").val().trim();
+    arrivalTime = currentTime;
+    arrivalCountDown = currentTime;
+    trainPlatform = $("#train-platform").val().trim();
 
     //code for the push
     dataRef.ref().push({
 
-        trainNumber: trainNumber,
-        trainLine: trainLine,
+        trainStation: trainStation,
+        trainId: trainId,
         trainDest: trainDest,
-        trainDept: trainDept,
-        trainPlatForm: trainPlatForm,
+        firstDept: firstDept,
+        trainPlatform: trainPlatform,
         dateAdded: firebase.database.ServerValue.TIMESTAMP
     })
 });
 
 dataRef.ref().on("child_added", function (childSnapshot) {
 
-    // Log everything that's coming out of snapshot
-    console.log(childSnapshot.val().trainNumber);
-    console.log(childSnapshot.val().trainLine);
-    console.log(childSnapshot.val().trainDest);
-    console.log(childSnapshot.val().trainDept);
-    console.log(childSnapshot.val().trainPlatForm);
+
 
 
     // full list of items to the wall
     $('#train-schedule-body').append(
         '<tr>' +
-        '<td' + childSnapshot.val().trainNumber + '</td>' +
-        '<td>' + childSnapshot.val().trainLine + '</td>' +
+        '<td>' + childSnapshot.val().trainStation + '</td>' +
+        '<td>' + childSnapshot.val().trainId + '</td>' +
         '<td>' + childSnapshot.val().trainDest + '</td>' +
-        '<td>' + childSnapshot.val().trainDept + '</td>' +
-        '<td>' + childSnapshot.val().trainPlatForm + '</td>' +
+        '<td>' + childSnapshot.val().arrivalTime + '</td>' +
+        '<td>' + childSnapshot.val().arrivalCountDown + '</td>' +
+        '<td>' + childSnapshot.val().stationPlatform + '</td>' +
+        
         '</tr>'
     );
 
     // Handle the errors
 },);
+
