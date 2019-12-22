@@ -26,15 +26,23 @@ var currentTime = moment().format("h:mm");
 $("#testing").on("click", function() {
   
     var firstDept = $('.first-departure').val()
-    var covertFirstDept = moment(timemy = firstDept, 'HH:mm').diff(moment().startOf('day'), 'minutes');
+    var covertFirstDept = moment(firstDept, 'HH:mm').diff(moment().startOf('day'), 'minutes');
     console.log('my minutes ' + covertFirstDept)
   
     trainFrequency = $("#train-frequency")
     .val()
     .trim();
+    console.log('raw arrival time ' , trainFrequency)
+    var covertFrquency = moment(trainFrequency, 'mm').diff(moment().startOf('day'), 'minutes');
+    console.log('converted arrival time ' , covertFrquency)
+    var rawArrivalTime = covertFirstDept + covertFrquency;
+    console.log('times combined ' + rawArrivalTime)
+    var readyArrivalTime = moment(rawArrivalTime, "HH:mm").format("HH:mm")
+    console.log('Arrival Time Complete ' + readyArrivalTime)
 
-    var rawArrivalTime = covertFirstDept + trainFrequency;
-    console.log('raw arrival time ' + rawArrivalTime)
+
+    //var rawArrivalTime = moment(covertFirstDept).add(covertFrquency, "minutes").format("mm");
+   // console.log('raw arrival time ' , rawArrivalTime)
 
 });
 
